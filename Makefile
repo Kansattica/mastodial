@@ -1,11 +1,16 @@
 gob := go build
 files := root.go $(wildcard ./**/*.go)
 dist := dist
+uncom := $(dist)/uncompressed
+com := $(dist)/compressed
+compressed_prefix := cmp_
+
+exes := mastodial-linux32 mastodial-linux64 mastodial-windows32.exe mastodial-windows64.exe
+
 native: $(files)
 	$(gob) 
 
 .PHONY: all clean linux windows strip
-
 
 all: linux windows strip
 
@@ -13,15 +18,18 @@ clean:
 	go clean -i
 	rm -r $(dist)
 
-
 arch := 32 64
-prefix := dist/mastodial-
+prefix := $(uncom)/mastodial-
 
 distflags := -ldflags="-s -w"
 
-strip:
-	strip $(dist)/*linux*
-	./upx --brute $(dist)/*
+strip: $(foreach X, $(exes), $(com)/$(compressed_prefix)$X)
+
+$(com)/$(compressed_prefix)%: $(uncom)/%
+	mkdir -p $(com)
+	cp $<  $@
+	strip $@
+	./upx --brute $@
 
 linux: $(foreach X,$(arch),$(prefix)linux$X)
 
