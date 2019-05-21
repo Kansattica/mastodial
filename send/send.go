@@ -1,12 +1,15 @@
-package main
+package send
 
-import "flag"
-import "fmt"
+import (
+	"flag"
+	"fmt"
+	"github.com/kansattica/mastodial/common"
+)
 
 type sendoptions struct {
 	Send bool
 	FilePath string
-	ToDo Action
+	ToDo common.Action
 	PostId string
 }
 
@@ -29,5 +32,5 @@ func Send() {
 	flag.Parse()
 
 	fmt.Println("%+v\n", opt)
-	fmt.Println(post.String())
+	fmt.Println(common.Post.String())
 }

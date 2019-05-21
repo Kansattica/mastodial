@@ -1,7 +1,11 @@
 package main
 
-import "os"
-import "fmt"
+import (
+	"os"
+	"fmt"
+
+	"github.com/kansattica/mastodial/send"
+)
 
 func main() {
 
@@ -12,10 +16,10 @@ func main() {
 
 	switch os.Args[1] {
 	case "send":
-		Send()
+		send.Send()
 	case "recv":
 	case "receive":
-		Recv()
+	//	recv.Recv()
 	}
 
 }
