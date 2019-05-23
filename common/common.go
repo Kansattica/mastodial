@@ -6,6 +6,11 @@ import "strings"
 type Action int
 
 const (
+	ConfigLocation = "mdconfig.json"
+)
+
+
+const (
 	Nop Action = iota
 	Post
 	Fav
@@ -29,10 +34,4 @@ func ParseAction(str string) (Action, error) {
 	} else {
 		return Nop, errors.New("Invalid opcode " + str)
 	}
-}
-
-type globaloptions struct {
-	configLocation string
-	instanceURL string
-
 }

@@ -1,29 +1,25 @@
-gob := go build
-files := root.go $(wildcard ./**/*.go)
-dist := dist
-uncom := $(dist)/uncompressed
-com := $(dist)/compressed
-compressed_prefix := cmp_
+gob = go build
+files = main.go $(wildcard ./**/*.go)
+dist = dist
+uncom = $(dist)/uncompressed
+com = $(dist)/compressed
+compressed_prefix = cmp_
 
-exes := mastodial-linux32 mastodial-linux64 mastodial-windows32.exe mastodial-windows64.exe
+exes = mastodial-linux32 mastodial-linux64 mastodial-windows32.exe mastodial-windows64.exe
 
 native: $(files)
 	$(gob) 
 
-.PHONY: all clean linux windows strip
+.PHONY: all clean linux windows ship
 
-all: linux windows strip
+all: linux windows
 
 clean: 
 	go clean -i
 	rm -r $(dist)
 
-arch := 32 64
-prefix := $(uncom)/mastodial-
 
-distflags := -ldflags="-s -w"
-
-strip: $(foreach X, $(exes), $(com)/$(compressed_prefix)$X)
+ship: $(foreach X, $(exes), $(com)/$(compressed_prefix)$X)
 
 $(com)/$(compressed_prefix)%: $(uncom)/%
 	mkdir -p $(com)
@@ -31,6 +27,10 @@ $(com)/$(compressed_prefix)%: $(uncom)/%
 	strip $@
 	./upx --brute $@
 
+arch := 32 64
+prefix := $(uncom)/mastodial-
+
+distflags := -ldflags="-s -w"
 linux: $(foreach X,$(arch),$(prefix)linux$X)
 
 windows: $(foreach X,$(arch),$(prefix)windows$X.exe)
