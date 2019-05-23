@@ -1,5 +1,4 @@
 package recv
 
-
 func Recv() {
 }

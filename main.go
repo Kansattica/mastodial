@@ -10,6 +10,10 @@ import (
 )
 
 func main() {
+	if (len(os.Args) == 1) {
+		usage()
+		return
+	}
 
 	switch os.Args[1] {
 	case "send":
@@ -19,7 +23,7 @@ func main() {
 	case "setup", "set", "get":
 		setup.Setup()
 	default:
-		usage();
+		usage()
 	}
 
 }

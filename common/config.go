@@ -10,10 +10,12 @@ import (
 )
 
 const (
-	InstanceUrl = "instanceurl"
+	InstanceUrl  = "instanceurl"
+	ClientId     = "clientid"
+	ClientSecret = "clientsecret"
 )
 
-var Alloptions = [...]string{InstanceUrl}
+var Alloptions = [...]string{InstanceUrl, ClientId, ClientSecret}
 
 var options map[string]string
 var ConfigRead bool
@@ -88,6 +90,12 @@ func SetConfig(key string, val string, force bool) error {
 
 	if err != nil {
 		return err
+	}
+
+	val, err = isvalid(key, val)
+
+	if err != nil {
+		return errors.New("Validation failed: " + err.Error())
 	}
 
 	options[key] = val

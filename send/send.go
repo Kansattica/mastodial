@@ -7,10 +7,10 @@ import (
 )
 
 type sendoptions struct {
-	Send bool
+	Send     bool
 	FilePath string
-	ToDo common.Action
-	PostId string
+	ToDo     common.Action
+	PostId   string
 }
 
 var opt sendoptions
@@ -22,10 +22,10 @@ func init() {
 		shorthand = " (shorthand)"
 	)
 	flag.BoolVar(&opt.Send, "send", false, sendUsage)
-	flag.BoolVar(&opt.Send, "s", false, sendUsage + shorthand)
+	flag.BoolVar(&opt.Send, "s", false, sendUsage+shorthand)
 
 	flag.StringVar(&opt.FilePath, "file", "queue", fileUsage)
-	flag.StringVar(&opt.FilePath, "f", "queue", fileUsage + shorthand)
+	flag.StringVar(&opt.FilePath, "f", "queue", fileUsage+shorthand)
 }
 
 func Send() {

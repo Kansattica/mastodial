@@ -9,7 +9,6 @@ const (
 	ConfigLocation = "mdconfig.json"
 )
 
-
 const (
 	Nop Action = iota
 	Post

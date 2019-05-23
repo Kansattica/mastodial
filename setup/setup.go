@@ -10,7 +10,6 @@ func init() {
 }
 
 func Setup() {
-	fmt.Println(os.Args)
 	if len(os.Args) < 3 {
 		usage()
 		return

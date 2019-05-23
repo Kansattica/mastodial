@@ -1,11 +1,10 @@
 package setup
 
 import (
+	"fmt"
 	"github.com/kansattica/mastodial/common"
 	"os"
-	"fmt"
 )
-
 
 func hasforce(arr []string) (without []string, force bool) {
 	flag := -1
@@ -33,32 +32,31 @@ func help(arr []string) bool {
 	return false
 }
 
-
 func config() {
 	args, force := hasforce(os.Args)
 
 	if help(args) || len(args) <= 3 {
-		valid();
-		return;
+		valid()
+		return
 	}
 
 	toset := args[3]
 
 	var value string
-	if (len(args) > 4) {
+	if len(args) > 4 {
 		value = args[4]
 	} else {
 		val, err := common.GetConfig(toset)
 		if err != nil {
 			fmt.Printf("for key %s: error %s\n", toset, err)
 		}
-		fmt.Printf("%s: %v\n", toset, val)
+		fmt.Println(val)
 		return
 	}
 
 	err := common.SetConfig(toset, value, force)
 
-	if err != nil{
+	if err != nil {
 		fmt.Println("could not set key %s: %s", toset, err)
 	}
 
@@ -73,6 +71,7 @@ func valid() {
 	fmt.Println("Using this tool will create a " + common.ConfigLocation + ".bak file with the value of your " + common.ConfigLocation + " before the change.")
 	fmt.Println("Omitting [optionvalue] will print the current value for that option.")
 	fmt.Println("Option names are case insensitive. InstanceUrl, Instanceurl, and instanceurl all work.")
+	fmt.Println("Keep your config file safe! Anyone with the file can post to your Mastodon account.")
 	fmt.Println("Available options:")
 	for _, val := range common.Alloptions {
 		fmt.Println(val)

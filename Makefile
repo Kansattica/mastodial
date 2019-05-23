@@ -1,3 +1,4 @@
+.PHONY: all clean linux windows ship format
 gob = go build
 files = main.go $(wildcard ./**/*.go)
 dist = dist
@@ -10,7 +11,9 @@ exes = mastodial-linux32 mastodial-linux64 mastodial-windows32.exe mastodial-win
 native: $(files)
 	$(gob) 
 
-.PHONY: all clean linux windows ship
+format:
+	gofmt -s -w .
+
 
 all: linux windows
 
