@@ -12,7 +12,7 @@ compressed_prefix = cmp_
 
 exes = mastodial-linux32 mastodial-linux64 mastodial-windows32.exe mastodial-windows64.exe
 
-native: $(files)
+mastodial: $(files)
 	$(gob) 
 
 format:
