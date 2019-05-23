@@ -12,7 +12,7 @@ native: $(files)
 	$(gob) 
 
 format:
-	gofmt -s -w .
+	gofmt -l -s -w .
 
 
 all: linux windows
