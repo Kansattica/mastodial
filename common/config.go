@@ -13,9 +13,10 @@ const (
 	InstanceUrl  = "instanceurl"
 	ClientId     = "clientid"
 	ClientSecret = "clientsecret"
+	AccessToken  = "accesstoken"
 )
 
-var Alloptions = [...]string{InstanceUrl, ClientId, ClientSecret}
+var Alloptions = [...]string{InstanceUrl, ClientId, ClientSecret, AccessToken}
 
 var options map[string]string
 var ConfigRead bool

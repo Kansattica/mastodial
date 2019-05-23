@@ -1,9 +1,11 @@
-.PHONY: all clean linux windows ship format
+.PHONY: all clean linux windows ship format tarball
 gob = go build
 files = main.go $(wildcard ./**/*.go)
+toplevel = main.go common Makefile README.md recv send setup
 dist = dist
 uncom = $(dist)/uncompressed
 com = $(dist)/compressed
+tarball = $(dist)/mastodial.tar
 compressed_prefix = cmp_
 
 exes = mastodial-linux32 mastodial-linux64 mastodial-windows32.exe mastodial-windows64.exe
@@ -21,14 +23,24 @@ clean:
 	go clean -i
 	rm -r $(dist)
 
+tarball: $(tarball)
 
-ship: $(foreach X, $(exes), $(com)/$(compressed_prefix)$X)
+ship: $(foreach X, $(exes), $(com)/$(compressed_prefix)$X) $(tarball) $(tarball).gz
+
+$(dist):
+	mkdir -p $(dist)
+
+$(tarball): $(files) $(dist)
+	tar cvf $(tarball) $(toplevel)
 
 $(com)/$(compressed_prefix)%: $(uncom)/%
 	mkdir -p $(com)
-	cp $<  $@
+	cp $< $@
 	strip $@
 	./upx --brute $@
+
+%.gz: %
+	gzip -k -f $<
 
 arch := 32 64
 prefix := $(uncom)/mastodial-
