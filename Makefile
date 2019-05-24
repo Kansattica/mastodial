@@ -40,6 +40,7 @@ $(srczip): $(files) $(toplevel)
 
 $(com)/$(compressed_prefix)%: $(uncom)/%
 	mkdir -p $(com)
+	rm -f $@ #upx won't overwrite an existing file
 	./upx --brute $< -o $@
 	touch $@ #otherwise, this has the same timestamp as the uncompressed file
 
