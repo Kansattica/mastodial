@@ -41,7 +41,18 @@ func valid() {
 	fmt.Println("Option names are case insensitive. InstanceUrl, Instanceurl, and instanceurl all work.")
 	fmt.Println("Keep your config file safe! Anyone with the file can post to your Mastodon account.")
 	fmt.Println("Available options:")
+
+	thisline := 0
 	for _, val := range common.Alloptions {
-		fmt.Println(val)
+		fmt.Print(val, "\t")
+		thisline++
+		if thisline > 4 {
+			thisline = 0
+			fmt.Println()
+		}
+	}
+
+	if thisline != 0 {
+		fmt.Println()
 	}
 }
