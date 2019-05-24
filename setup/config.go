@@ -20,11 +20,7 @@ func config(args []string) {
 	if len(args) > 3 {
 		value = args[3]
 	} else {
-		val, err := common.GetConfig(toset)
-		if err != nil {
-			fmt.Printf("for key %s: error %s\n", toset, err)
-		}
-		fmt.Println(val)
+		fmt.Println(common.GetConfig(toset))
 		return
 	}
 

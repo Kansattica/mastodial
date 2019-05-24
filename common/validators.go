@@ -3,6 +3,7 @@ package common
 import (
 	"errors"
 	"net/url"
+	"strings"
 )
 
 type validate func(value string) (string, error)
@@ -19,11 +20,7 @@ var strategies = map[string]validate{
 			return given, errors.New("URL must start with https://")
 		}
 
-		if given[len(given)-1:] != "/" { //if the last character isn't a slash, add a trailing slash
-			given += "/"
-		}
-
-		return given, nil
+		return strings.TrimRight(parsed.String(), "/"), nil
 	},
 }
 

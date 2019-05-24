@@ -11,9 +11,9 @@ import (
 )
 
 func MakePostRequest(endpoint string, body, queryParams map[string]string) (resp *http.Response, err error) {
-	strUrl, err := GetConfig(InstanceUrl)
+	strUrl := GetConfig(InstanceUrl)
 
-	if err != nil {
+	if strUrl == "" {
 		fmt.Printf("Please set your instance URL by running:\n %s setup set config instanceurl https://[your instance url]\n", CommandName)
 		return nil, err
 	}
@@ -33,6 +33,8 @@ func MakePostRequest(endpoint string, body, queryParams map[string]string) (resp
 		for k, v := range queryParams {
 			q.Set(k, v)
 		}
+
+		iurl.RawQuery = q.Encode()
 	}
 
 	bodyjson, err := json.Marshal(body)

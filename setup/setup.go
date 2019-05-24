@@ -19,7 +19,7 @@ func Setup(args []string) {
 	case "app":
 		app(args)
 	case "creds":
-
+		creds(args)
 	case "config":
 		config(args)
 	default:

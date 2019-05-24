@@ -7,9 +7,9 @@ import (
 
 func app(args []string) {
 
-	url, err := common.GetConfig(common.InstanceUrl)
+	url := common.GetConfig(common.InstanceUrl)
 
-	if err != nil || url == "" {
+	if url == "" {
 		fmt.Printf("Please set your instance URL by running:\n %s setup set config instanceurl https://[your instance url]\n", common.CommandName)
 		return
 	}

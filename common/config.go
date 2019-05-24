@@ -14,23 +14,26 @@ const (
 	ClientId     = "clientid"
 	ClientSecret = "clientsecret"
 	AccessToken  = "accesstoken"
+	Username     = "username"
+	Password     = "password"
+	AuthCode     = "authcode"
 )
 
-var Alloptions = [...]string{InstanceUrl, ClientId, ClientSecret, AccessToken}
+var Alloptions = [...]string{InstanceUrl, ClientId, ClientSecret, AccessToken, Username, Password, AuthCode}
 
 var options map[string]string
 var ConfigRead bool = false
 var triedRead bool = false
 
-func GetConfig(key string) (string, error) {
+func GetConfig(key string) string {
 	key = strings.ToLower(key)
 	err := iskeygood(key)
 
 	if err != nil {
-		return "", err
+		return ""
 	}
 
-	return options[key], nil
+	return options[key]
 }
 
 func SetConfig(key string, val string, force, skipsave bool) error {
