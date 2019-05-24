@@ -1,6 +1,7 @@
 package setup
 
 import (
+	"errors"
 	"fmt"
 	"net/url"
 
@@ -19,7 +20,18 @@ func creds(args []string) {
 
 	strat := pickauth()
 
-	if strat == nocreds {
+	authInfo := make(map[string]string)
+	var granttype string
+
+	switch strat {
+	case authcode:
+		granttype = "authorization_code"
+		authInfo["code"] = common.GetConfig(common.AuthCode)
+	case userpass:
+		granttype = "client_credentials"
+		authInfo["username"] = common.GetConfig(common.Username)
+		authInfo["password"] = common.GetConfig(common.Password)
+	case nocreds:
 		fmt.Println("You have two options to set up your credentials. You can either store your username and password, or you can generate an authentication code.")
 		fmt.Println("If you can open up a browser, I suggest the authentication code method. Visit the following url and complete the prompts:")
 		fmt.Println(authcodeurl())
@@ -30,7 +42,51 @@ func creds(args []string) {
 		fmt.Println(common.CommandName, "set config", common.Username, "(your username)")
 		fmt.Println(common.CommandName, "set config", common.Password, "(your password)")
 		fmt.Println("Then run this command again.")
+		return
 	}
+
+	atoken, rtoken, err := getToken(granttype, authInfo)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	uerr := common.SetConfig(common.AccessToken, atoken, true)
+	perr := common.SetConfig(common.RefreshToken, rtoken, false)
+
+	if uerr != nil || perr != nil {
+		fmt.Println("Failed to save tokens. SetConfig said:\n", uerr, "\n", perr)
+	}
+
+	return
+
+}
+
+func getToken(granttype string, authInfo map[string]string) (string, string, error) {
+	authInfo["grant_type"] = granttype
+	authInfo["client_id"] = common.GetConfig(common.ClientId)
+	authInfo["client_secret"] = common.GetConfig(common.ClientSecret)
+	authInfo["redirect_uri"] = "urn:ietf:wg:oauth:2.0:oob"
+	resp, err := common.MakePostRequest("/oauth/token", authInfo, nil)
+
+	if err != nil {
+		return "", "", errors.New("Could not get token. Tried authentication grant type: " + granttype + " Post request returned: " + err.Error())
+	}
+
+	body, err := common.ParseBody(resp.Body)
+
+	if err != nil {
+		return "", "", errors.New("Could not parse response. Tried authentication grant type: " + granttype + " Parser returned: " + err.Error())
+	}
+
+	atoken, aok := body["access_token"]
+	rtoken, rok := body["refresh_token"]
+	if aok && rok {
+		return atoken, rtoken, nil
+	}
+
+	return "", "", fmt.Errorf("Did not get tokens back. Instead got: %v", body)
 
 }
 

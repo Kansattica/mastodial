@@ -31,7 +31,7 @@ func app(args []string) {
 		fmt.Println("Failed to register app. Please try again. Error: " + err.Error())
 	}
 
-	body, err := common.GetResponse(resp.Body)
+	body, err := common.ParseBody(resp.Body)
 
 	if err != nil {
 		fmt.Println("Failed to register app. Please try again. Error: " + err.Error())
@@ -39,8 +39,8 @@ func app(args []string) {
 	}
 
 	fmt.Printf("%+v\n", body)
-	common.SetConfig(common.ClientId, body["client_id"], false, true)
-	err = common.SetConfig(common.ClientSecret, body["client_secret"], false, false)
+	common.SetConfig(common.ClientId, body["client_id"], true)
+	err = common.SetConfig(common.ClientSecret, body["client_secret"], false)
 
 	if err != nil {
 		fmt.Println("Failed to set config. Please try again. Error: ", err.Error())

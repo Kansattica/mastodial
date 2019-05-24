@@ -14,12 +14,13 @@ const (
 	ClientId     = "clientid"
 	ClientSecret = "clientsecret"
 	AccessToken  = "accesstoken"
+	RefreshToken = "refreshtoken"
 	Username     = "username"
 	Password     = "password"
 	AuthCode     = "authcode"
 )
 
-var Alloptions = [...]string{InstanceUrl, ClientId, ClientSecret, AccessToken, Username, Password, AuthCode}
+var Alloptions = [...]string{InstanceUrl, ClientId, ClientSecret, AccessToken, RefreshToken, Username, Password, AuthCode}
 
 var options map[string]string
 var ConfigRead bool = false
@@ -36,7 +37,7 @@ func GetConfig(key string) string {
 	return options[key]
 }
 
-func SetConfig(key string, val string, force, skipsave bool) error {
+func SetConfig(key string, val string, skipsave bool) error {
 	key = strings.ToLower(key)
 	err := iskeygood(key)
 
@@ -53,10 +54,23 @@ func SetConfig(key string, val string, force, skipsave bool) error {
 	options[key] = val
 
 	if !skipsave {
-		return saveConfig(force)
+		return saveConfig()
 	}
 
 	return nil
+}
+
+func DeleteConfig(key string) error {
+	key = strings.ToLower(key)
+	err := iskeygood(key)
+
+	if err != nil {
+		return err
+	}
+
+	delete(options, key)
+
+	return saveConfig()
 }
 
 func OptionExists(key string) bool {
@@ -68,7 +82,7 @@ func OptionExists(key string) bool {
 	return false
 }
 
-func saveConfig(force bool) error {
+func saveConfig() error {
 	bytes, err := json.MarshalIndent(options, "", "\t")
 
 	if err != nil {
@@ -78,7 +92,7 @@ func saveConfig(force bool) error {
 
 	err = os.Rename(ConfigLocation, ConfigLocation+".bak")
 
-	if !force && err != nil {
+	if !Force && err != nil {
 		fmt.Println("Failed to backup your old config file. Your config files have not been changed. Try again with the --force parameter to try saving changes anyway. Rename reported " + err.Error())
 		return err
 	}

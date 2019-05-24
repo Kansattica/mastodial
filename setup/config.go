@@ -12,8 +12,6 @@ func config(args []string) {
 		return
 	}
 
-	force := common.Force
-
 	toset := args[2]
 
 	var value string
@@ -24,7 +22,7 @@ func config(args []string) {
 		return
 	}
 
-	err := common.SetConfig(toset, value, force, false)
+	err := common.SetConfig(toset, value, false)
 
 	if err != nil {
 		fmt.Printf("could not set key %s: %s\n", toset, err)

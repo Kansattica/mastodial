@@ -44,11 +44,11 @@ func MakePostRequest(endpoint string, body, queryParams map[string]string) (resp
 		return
 	}
 
-	fmt.Printf("POST %s (Sending %d bytes)", iurl.String(), len(bodyjson))
+	fmt.Printf("POST %s (Sending %d bytes)\n", iurl.String(), len(bodyjson))
 	return http.Post(iurl.String(), "application/json", bytes.NewReader(bodyjson))
 }
 
-func GetResponse(body io.Reader) (resp map[string]string, err error) {
+func ParseBody(body io.Reader) (resp map[string]string, err error) {
 	buf := new(bytes.Buffer)
 
 	read, err := buf.ReadFrom(body)
@@ -61,7 +61,7 @@ func GetResponse(body io.Reader) (resp map[string]string, err error) {
 	err = json.Unmarshal(buf.Bytes(), &resp)
 
 	if err != nil {
-		fmt.Printf("Failed to deserialize request. This probably isn't your fault. json.Unmarshal said: %s. Bytes: \n", err.Error())
+		fmt.Printf("Failed to deserialize request. This probably isn't your fault. json.Unmarshal said: %s. Bytes: %d\n", err.Error(), read)
 		buf.WriteTo(os.Stdout)
 		return
 	}
