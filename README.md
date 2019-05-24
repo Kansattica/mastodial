@@ -13,4 +13,4 @@ If you simply want to download and build the software for your own use, you only
 
 `make ship` will:
 	- build the three source archives (tarball, gzipped tarball, and .zip)
-	- build the four release packages (32 and 64 bit versions for Windows and Linux) and run strip(1) and [UPX](https://github.com/upx/upx) on them, if available. You probably won't have to do this unless you're distributing the binaries yourself.
+	- build the four release packages (32 and 64 bit versions for Windows and Linux) and run [UPX](https://github.com/upx/upx) on them, if available. You probably won't have to do this unless you're distributing the binaries yourself.

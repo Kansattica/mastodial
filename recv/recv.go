@@ -1,4 +1,4 @@
 package recv
 
-func Recv() {
+func Recv(args []string) {
 }

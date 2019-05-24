@@ -12,7 +12,7 @@ compressed_prefix = cmp_
 
 exes = mastodial-linux32 mastodial-linux64 mastodial-windows32.exe mastodial-windows64.exe
 
-mastodial: $(files)
+mastodial: $(files) format
 	$(gob) 
 
 format:
@@ -38,9 +38,8 @@ $(srczip): $(files) $(toplevel)
 
 $(com)/$(compressed_prefix)%: $(uncom)/%
 	mkdir -p $(com)
-	cp $< $@
-	strip $@
-	./upx --brute $@
+	./upx --brute $< -o $@
+	touch $@ #otherwise, this has the same timestamp as the uncompressed file
 
 %.gz: %
 	gzip -k -f $<

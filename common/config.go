@@ -19,9 +19,14 @@ const (
 var Alloptions = [...]string{InstanceUrl, ClientId, ClientSecret, AccessToken}
 
 var options map[string]string
-var ConfigRead bool
+var ConfigRead bool = false
+var triedRead bool = false
 
-func init() {
+func readConfig() {
+	if triedRead {
+		return
+	}
+
 	file, err := os.OpenFile(ConfigLocation, os.O_RDWR|os.O_CREATE, 0644)
 
 	if err != nil {
@@ -54,6 +59,7 @@ func init() {
 }
 
 func iskeygood(key string) error {
+	readConfig()
 	if !ConfigRead {
 		return errors.New("Could not read config file.")
 	}

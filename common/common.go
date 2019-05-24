@@ -6,10 +6,6 @@ import "strings"
 type Action int
 
 const (
-	ConfigLocation = "mdconfig.json"
-)
-
-const (
 	Nop Action = iota
 	Post
 	Fav
