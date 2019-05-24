@@ -18,6 +18,6 @@ func init() {
 	flag.StringVar(&ConfigLocation, "c", "mdconfig.json", configusage+sh)
 
 	flag.BoolVar(&Force, "force", false, forceusage)
-	flag.BoolVar(&Force, "f", false, forceusage)
+	flag.BoolVar(&Force, "f", false, forceusage+sh)
 
 }

@@ -20,7 +20,6 @@ func main() {
 		return
 	}
 
-	fmt.Println(args)
 	switch args[0] {
 	case "send":
 		send.Send(args)
@@ -39,5 +38,5 @@ func usage(cmd string) {
 	fmt.Printf("\t%s recv  - recieve posts\n", cmd)
 	fmt.Printf("\t%s send  - send posts\n", cmd)
 	fmt.Printf("\t%s setup - set up connection, set options\n", cmd)
-	fmt.Println("Append any subcommand with -h for help and usage information.")
+	fmt.Printf("Call %s -h for command line flags.\n", cmd)
 }

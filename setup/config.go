@@ -7,18 +7,18 @@ import (
 
 func config(args []string) {
 
-	if len(args) <= 3 {
+	if len(args) <= 2 {
 		valid()
 		return
 	}
 
 	force := common.Force
 
-	toset := args[3]
+	toset := args[2]
 
 	var value string
-	if len(args) > 4 {
-		value = args[4]
+	if len(args) > 3 {
+		value = args[3]
 	} else {
 		val, err := common.GetConfig(toset)
 		if err != nil {
@@ -28,10 +28,10 @@ func config(args []string) {
 		return
 	}
 
-	err := common.SetConfig(toset, value, force)
+	err := common.SetConfig(toset, value, force, false)
 
 	if err != nil {
-		fmt.Println("could not set key %s: %s", toset, err)
+		fmt.Printf("could not set key %s: %s\n", toset, err)
 	}
 
 	return

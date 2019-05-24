@@ -22,6 +22,74 @@ var options map[string]string
 var ConfigRead bool = false
 var triedRead bool = false
 
+func GetConfig(key string) (string, error) {
+	key = strings.ToLower(key)
+	err := iskeygood(key)
+
+	if err != nil {
+		return "", err
+	}
+
+	return options[key], nil
+}
+
+func SetConfig(key string, val string, force, skipsave bool) error {
+	key = strings.ToLower(key)
+	err := iskeygood(key)
+
+	if err != nil {
+		return err
+	}
+
+	val, err = isvalid(key, val)
+
+	if err != nil {
+		return errors.New("Validation failed: " + err.Error())
+	}
+
+	options[key] = val
+
+	if !skipsave {
+		return saveConfig(force)
+	}
+
+	return nil
+}
+
+func OptionExists(key string) bool {
+	for _, val := range Alloptions {
+		if val == key {
+			return true
+		}
+	}
+	return false
+}
+
+func saveConfig(force bool) error {
+	bytes, err := json.MarshalIndent(options, "", "\t")
+
+	if err != nil {
+		fmt.Println("Failed to save changes to disk. Your config files have not been changed. Marshal reported " + err.Error())
+		return err
+	}
+
+	err = os.Rename(ConfigLocation, ConfigLocation+".bak")
+
+	if !force && err != nil {
+		fmt.Println("Failed to backup your old config file. Your config files have not been changed. Try again with the --force parameter to try saving changes anyway. Rename reported " + err.Error())
+		return err
+	}
+
+	err = ioutil.WriteFile(ConfigLocation, bytes, 0600)
+
+	if err != nil {
+		fmt.Println("Failed to write new config file. Your old file has been saved to " + ConfigLocation + ".bak. Overwrite your current config file as needed. WriteFile reported " + err.Error())
+		return err
+	}
+
+	return nil
+}
+
 func readConfig() {
 	if triedRead {
 		return
@@ -66,70 +134,6 @@ func iskeygood(key string) error {
 
 	if !OptionExists(key) {
 		return errors.New("Option does not exist.")
-	}
-
-	return nil
-}
-
-func OptionExists(key string) bool {
-	for _, val := range Alloptions {
-		if val == key {
-			return true
-		}
-	}
-	return false
-}
-
-func GetConfig(key string) (string, error) {
-	key = strings.ToLower(key)
-	err := iskeygood(key)
-
-	if err != nil {
-		return "", err
-	}
-
-	return options[key], nil
-}
-
-func SetConfig(key string, val string, force bool) error {
-	key = strings.ToLower(key)
-	err := iskeygood(key)
-
-	if err != nil {
-		return err
-	}
-
-	val, err = isvalid(key, val)
-
-	if err != nil {
-		return errors.New("Validation failed: " + err.Error())
-	}
-
-	options[key] = val
-
-	return saveConfig(force)
-}
-
-func saveConfig(force bool) error {
-	bytes, err := json.MarshalIndent(options, "", "\t")
-
-	if err != nil {
-		fmt.Println("Failed to save changes to disk. Your config files have not been changed. Marshal reported " + err.Error())
-		return err
-	}
-
-	err = os.Rename(ConfigLocation, ConfigLocation+".bak")
-
-	if !force && err != nil {
-		fmt.Println("Failed to backup your old config file. Your config files have not been changed. Try again with the --force parameter to try saving changes anyway. Rename reported " + err.Error())
-		return err
-	}
-
-	err = ioutil.WriteFile(ConfigLocation, bytes, 0600)
-
-	if err != nil {
-		fmt.Println("Failed to write new config file. Your old file has been saved to " + ConfigLocation + ".bak. Overwrite your current config file as needed. WriteFile reported " + err.Error())
-		return err
 	}
 
 	return nil
