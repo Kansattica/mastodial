@@ -42,7 +42,7 @@ func MakePostRequest(endpoint string, body, queryParams map[string]string) (resp
 		return
 	}
 
-	fmt.Printf("Making request to ", iurl.String())
+	fmt.Printf("POST %s (Sending %d bytes)", iurl.String(), len(bodyjson))
 	return http.Post(iurl.String(), "application/json", bytes.NewReader(bodyjson))
 }
 
