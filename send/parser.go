@@ -12,25 +12,63 @@ type action struct {
 }
 
 func parseArgsToActions(args []string) (acts []action, err error) {
-	fmt.Print(args)
 	todo, err := ParseActionType(args[0])
 
 	if err != nil {
 		return
 	}
 
+	args = args[1:]
+
+	var thisact action
+	thisact.Act = todo
+	minargs := 1
+	fields := []*string{&thisact.Text, &thisact.CW}
 	switch todo {
 	case Fav, Boost:
-		for _, val := range args[1:] {
+		for _, val := range args {
 			acts = append(acts, action{Act: todo, PostId: val})
 		}
+
+	case Reply:
+		fields = []*string{&thisact.Text, &thisact.PostId, &thisact.CW}
+		minargs = 2
+		fallthrough
+	case Post:
+		parsePercentArgs(args, fields)
+		if thisact.Text == "" {
+			err = fmt.Errorf("You have to give some text for %s", todo)
+			return
+		}
 	}
+
+	if len(args) == 0 {
+		err = fmt.Errorf("You need %d or more arguments.", minargs)
+		return
+	}
+	acts = append(acts, thisact)
 
 	return
 }
 
-func parseFavBoostArgs(args []string) []string {
-	return args[2:]
+func parsePercentArgs(args []string, fields []*string) {
+	build := ""
+	fieldcount := 0
+	for _, val := range args {
+		if fieldcount >= len(fields) {
+			return
+		}
+
+		switch val {
+		case "%":
+			*(fields[fieldcount]) = strings.Replace(build, "%%", "%", -1)
+			build = ""
+			fieldcount++
+		default:
+			build = build + val + " "
+		}
+	}
+	*(fields[fieldcount]) = strings.Replace(build, "%%", "%", -1)
 }
 
 type ActionType int

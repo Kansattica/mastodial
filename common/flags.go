@@ -8,6 +8,7 @@ var ConfigLocation string
 var Force bool
 var QueueRequests bool
 var QueueLocation string
+var ReadStdin bool
 
 const (
 	sh             = " (shorthand)"
@@ -15,6 +16,7 @@ const (
 	forceusage     = "Try to write new files, even if creating a backup failed."
 	queueusage     = "Queue requests to Mastdon to a file for later. Only works with the recieve subcommand."
 	qlocationusage = "File to store or read queued requests."
+	stdinusage     = "When giving actions to send, read from stdin instead of the shell."
 )
 
 func init() {
@@ -25,9 +27,11 @@ func init() {
 	flag.BoolVar(&Force, "f", false, forceusage+sh)
 
 	flag.BoolVar(&QueueRequests, "queue", false, queueusage)
-	flag.BoolVar(&Force, "q", false, queueusage+sh)
+	flag.BoolVar(&QueueRequests, "q", false, queueusage+sh)
 
 	flag.StringVar(&QueueLocation, "queuefile", "mdqueue.json", queueusage)
 	flag.StringVar(&QueueLocation, "qf", "mdqueue.json", queueusage+sh)
+
+	flag.BoolVar(&ReadStdin, "stdin", false, queueusage)
 
 }
