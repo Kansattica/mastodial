@@ -39,8 +39,8 @@ func app(args []string) {
 	}
 
 	fmt.Printf("%+v\n", body)
-	common.SetConfig(common.ClientId, body["client_id"], true)
-	err = common.SetConfig(common.ClientSecret, body["client_secret"], false)
+	common.SetConfig(common.ClientId, body["client_id"].(string), true)
+	err = common.SetConfig(common.ClientSecret, body["client_secret"].(string), false)
 
 	if err != nil {
 		fmt.Println("Failed to set config. Please try again. Error: ", err.Error())

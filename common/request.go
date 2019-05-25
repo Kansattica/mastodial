@@ -48,7 +48,7 @@ func MakePostRequest(endpoint string, body, queryParams map[string]string) (resp
 	return http.Post(iurl.String(), "application/json", bytes.NewReader(bodyjson))
 }
 
-func ParseBody(body io.Reader) (resp map[string]string, err error) {
+func ParseBody(body io.Reader) (resp map[string]interface{}, err error) {
 	buf := new(bytes.Buffer)
 
 	read, err := buf.ReadFrom(body)

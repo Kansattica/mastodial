@@ -45,25 +45,36 @@ func creds(args []string) {
 		return
 	}
 
-	atoken, rtoken, err := getToken(granttype, authInfo)
+	atoken, err := getToken(granttype, authInfo)
 
 	if err != nil {
 		fmt.Println(err)
+		if strat == authcode {
+			fmt.Println("If you need a new auth code, you can get one here:")
+			fmt.Println(authcodeurl())
+			fmt.Println("If you'd prefer to try username and password auth instead, remove your expired auth code with this command:")
+			fmt.Printf("%s setup config authcode \"\"\n", common.CommandName)
+		}
 		return
 	}
 
-	uerr := common.SetConfig(common.AccessToken, atoken, true)
-	perr := common.SetConfig(common.RefreshToken, rtoken, false)
+	aerr := common.SetConfig(common.AccessToken, atoken, false)
 
-	if uerr != nil || perr != nil {
-		fmt.Println("Failed to save tokens. SetConfig said:\n", uerr, "\n", perr)
+	if aerr != nil {
+		fmt.Println("Failed to save tokens. SetConfig said:\n", aerr)
 	}
 
+	fmt.Println("Got your access token! You should be ready to go.")
+
+	if strat == authcode {
+		fmt.Println("Deleting your used authorization code.")
+		common.DeleteConfig(common.AuthCode)
+	}
 	return
 
 }
 
-func getToken(granttype string, authInfo map[string]string) (string, string, error) {
+func getToken(granttype string, authInfo map[string]string) (string, error) {
 	authInfo["grant_type"] = granttype
 	authInfo["client_id"] = common.GetConfig(common.ClientId)
 	authInfo["client_secret"] = common.GetConfig(common.ClientSecret)
@@ -71,22 +82,21 @@ func getToken(granttype string, authInfo map[string]string) (string, string, err
 	resp, err := common.MakePostRequest("/oauth/token", authInfo, nil)
 
 	if err != nil {
-		return "", "", errors.New("Could not get token. Tried authentication grant type: " + granttype + " Post request returned: " + err.Error())
+		return "", errors.New("Could not get token. Tried authentication grant type: " + granttype + " Post request returned: " + err.Error())
 	}
 
 	body, err := common.ParseBody(resp.Body)
 
 	if err != nil {
-		return "", "", errors.New("Could not parse response. Tried authentication grant type: " + granttype + " Parser returned: " + err.Error())
+		return "", errors.New("Could not parse response. Tried authentication grant type: " + granttype + " Parser returned: " + err.Error())
 	}
 
-	atoken, aok := body["access_token"]
-	rtoken, rok := body["refresh_token"]
-	if aok && rok {
-		return atoken, rtoken, nil
+	atoken, aok := body["access_token"].(string)
+	if aok {
+		return atoken, nil
 	}
 
-	return "", "", fmt.Errorf("Did not get tokens back. Instead got: %v", body)
+	return "", fmt.Errorf("Did not get tokens back. Instead got: %v", body)
 
 }
 
