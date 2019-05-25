@@ -70,7 +70,7 @@ func parsePercentArgs(args []string, fields []*string) {
 			build = build + val + " "
 		}
 	}
-	*(fields[fieldcount]) = strings.Replace(build, "%%", "%", -1)
+	*(fields[fieldcount]) = strings.TrimRight(strings.Replace(build, "%%", "%", -1), "\t \r\n")
 }
 
 type ActionType int

@@ -10,7 +10,14 @@ import (
 	"os"
 )
 
-func MakePostRequest(endpoint string, body, queryParams map[string]string) (resp *http.Response, err error) {
+func MakeAuthenticatedPost(endpoint string, body, queryParams map[string]string) (resp *http.Response, err error) {
+	tok := GetConfig(AccessToken)
+	return MakePostRequest(endpoint, body, queryParams, map[string]string{
+		"Authorization": "Bearer " + tok,
+	})
+}
+
+func MakePostRequest(endpoint string, body, queryParams, header map[string]string) (resp *http.Response, err error) {
 	strUrl := GetConfig(InstanceUrl)
 
 	if strUrl == "" {
@@ -38,6 +45,7 @@ func MakePostRequest(endpoint string, body, queryParams map[string]string) (resp
 	}
 
 	bodyjson, err := json.Marshal(body)
+	fmt.Printf("%s\n", bodyjson)
 
 	if err != nil {
 		fmt.Println("Failed to serialize request. This probably isn't your fault. json.Marshal said: " + err.Error())
@@ -45,7 +53,22 @@ func MakePostRequest(endpoint string, body, queryParams map[string]string) (resp
 	}
 
 	fmt.Printf("POST %s (Sending %d bytes)\n", iurl.String(), len(bodyjson))
-	return http.Post(iurl.String(), "application/json", bytes.NewReader(bodyjson))
+	//return http.Post(iurl.String(), "application/json", bytes.NewReader(bodyjson))
+
+	client := &http.Client{}
+	req, err := http.NewRequest("POST", iurl.String(), bytes.NewReader(bodyjson))
+
+	if err != nil {
+		return
+	}
+
+	for k, v := range header {
+		req.Header.Set(k, v)
+	}
+	req.Header.Set("accept", "application/json")
+	req.Header.Set("content-type", "application/json;charset=UTF-8")
+
+	return client.Do(req)
 }
 
 func ParseBody(body io.Reader) (resp map[string]interface{}, err error) {
@@ -64,6 +87,10 @@ func ParseBody(body io.Reader) (resp map[string]interface{}, err error) {
 		fmt.Printf("Failed to deserialize request. This probably isn't your fault. json.Unmarshal said: %s. Bytes: %d\n", err.Error(), read)
 		buf.WriteTo(os.Stdout)
 		return
+	}
+
+	if b, shouldClose := body.(io.Closer); shouldClose {
+		b.Close()
 	}
 
 	return

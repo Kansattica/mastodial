@@ -79,7 +79,7 @@ func getToken(granttype string, authInfo map[string]string) (string, error) {
 	authInfo["client_id"] = common.GetConfig(common.ClientId)
 	authInfo["client_secret"] = common.GetConfig(common.ClientSecret)
 	authInfo["redirect_uri"] = "urn:ietf:wg:oauth:2.0:oob"
-	resp, err := common.MakePostRequest("/oauth/token", authInfo, nil)
+	resp, err := common.MakePostRequest("/oauth/token", authInfo, nil, nil)
 
 	if err != nil {
 		return "", errors.New("Could not get token. Tried authentication grant type: " + granttype + " Post request returned: " + err.Error())

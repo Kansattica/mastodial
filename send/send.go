@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"unicode"
+	"strings"
 	"unicode/utf8"
 
 	"github.com/kansattica/mastodial/common"
@@ -15,6 +15,7 @@ func Send(args []string) {
 		usage()
 		return
 	}
+
 	args = args[1:]
 
 	if common.ReadStdin {
@@ -26,7 +27,7 @@ func Send(args []string) {
 			args = append(args, scanner.Text())
 		}
 
-		fmt.Println(args)
+		args[len(args)-1] = strings.TrimRight(args[len(args)-1], "\r\n") //Trim trailing newlines, such as from typing your post in and entering ^D
 
 		if scanner.Err() != nil {
 			fmt.Println("Error reading from stdin:", scanner.Err())
@@ -41,6 +42,14 @@ func Send(args []string) {
 		return
 	}
 	fmt.Printf("%+v\n", acts)
+
+	err = processqueue(acts)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
 }
 
 type ad struct {
@@ -70,7 +79,7 @@ func usage() {
 		fmt.Println(val.action, "\t", val.args, "\t", val.description)
 	}
 	fmt.Println("\nThe percent sign character % is used to separate arguments.\nIf you want to post a percent sign, put another percent sign before it, like this: %%")
-	fmt.Println("If the shell keeps interpreting your exclamation points and whatnot, try using the -stdin flag. Then, type your post and hit ^D or pipe it in from a file.")
+	fmt.Println("If the shell keeps interpreting your exclamation points and whatnot, try using the -stdin flag. Then, type your post and hit ctrl-D on its own line or pipe it in from a file.")
 }
 
 //copied and adapted from https://golang.org/src/bufio/scan.go?s=13093:13171#L380
@@ -80,7 +89,7 @@ func ScanSpaceyWords(data []byte, atEOF bool) (advance int, token []byte, err er
 	for width := 0; start < len(data); start += width {
 		var r rune
 		r, width = utf8.DecodeRune(data[start:])
-		if !unicode.IsSpace(r) {
+		if r != ' ' {
 			break
 		}
 	}

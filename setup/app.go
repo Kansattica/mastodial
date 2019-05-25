@@ -25,7 +25,7 @@ func app(args []string) {
 		"redirect_uris": "urn:ietf:wg:oauth:2.0:oob",
 		"scopes":        "read write",
 		"website":       "https://github.com/Kansattica/mastodial",
-	}, nil)
+	}, nil, nil)
 
 	if err != nil {
 		fmt.Println("Failed to register app. Please try again. Error: " + err.Error())
