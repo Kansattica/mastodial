@@ -42,7 +42,7 @@ $(com)/$(compressed_prefix)%: $(uncom)/%
 	mkdir -p $(com)
 	rm -f $@ #upx won't overwrite an existing file
 	./upx --brute $< -o $@
-	touch $@ #otherwise, this has the same timestamp as the uncompressed file
+	touch $@ #upx truncates the lower bits of the timestamp, fix that
 
 %.gz: %
 	gzip -k -f $<
@@ -55,14 +55,11 @@ linux: $(foreach X,$(arch),$(prefix)linux$X)
 
 windows: $(foreach X,$(arch),$(prefix)windows$X.exe)
 
-$(prefix)linux64: $(files)
-	GOOS=linux GOARCH=amd64 $(gob) $(distflags) -o $@ 
+%.exe: %
+	mv $< $@ 
 
-$(prefix)linux32: $(files)
-	GOOS=linux GOARCH=386 $(gob) $(distflags) -o $@ 
+$(prefix)%64: $(files)
+	GOOS=$* GOARCH=amd64 $(gob) $(distflags) -o $@ 
 
-$(prefix)windows64.exe: $(files)
-	GOOS=windows GOARCH=amd64 $(gob) $(distflags) -o $@ 
-
-$(prefix)windows32.exe: $(files)
-	GOOS=windows GOARCH=386 $(gob) $(distflags) -o $@ 
+$(prefix)%32: $(files)
+	GOOS=$* GOARCH=386 $(gob) $(distflags) -o $@ 
