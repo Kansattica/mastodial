@@ -26,8 +26,10 @@ func parseArgsToActions(args []string) (acts []action, err error) {
 	fields := []*string{&thisact.Text, &thisact.CW}
 	switch todo {
 	case Fav, Boost:
-		for _, val := range args {
-			acts = append(acts, action{Act: todo, PostId: val})
+		for _, str := range args {
+			for _, val := range strings.Fields(str) {
+				acts = append(acts, action{Act: todo, PostId: val})
+			}
 		}
 
 	case Reply:
@@ -40,13 +42,13 @@ func parseArgsToActions(args []string) (acts []action, err error) {
 			err = fmt.Errorf("You have to give some text for %s", todo)
 			return
 		}
+		acts = append(acts, thisact)
 	}
 
 	if len(args) == 0 {
 		err = fmt.Errorf("You need %d or more arguments.", minargs)
 		return
 	}
-	acts = append(acts, thisact)
 
 	return
 }
