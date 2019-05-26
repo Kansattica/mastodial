@@ -36,7 +36,7 @@ func valid() {
 	fmt.Printf("%s set, get, and setup are all the same, use whichever works best for you.\n", common.CommandName)
 	fmt.Printf("This does mean that %s get can change your config file if you give it both arguments.\n", common.CommandName)
 	fmt.Println("setup is meant to help you set up your config file- feel free to edit " + common.ConfigLocation + " by hand if you prefer.")
-	fmt.Println("Using this tool will create a " + common.ConfigLocation + ".bak file with the value of your " + common.ConfigLocation + " before the change.")
+	fmt.Println("Using this tool on Linux will create a " + common.ConfigLocation + ".bak file with the value of your " + common.ConfigLocation + " before the change.")
 	fmt.Println("Omitting [optionvalue] will print the current value for that option.")
 	fmt.Println("Option names are case insensitive. InstanceUrl, Instanceurl, and instanceurl all work.")
 	fmt.Println("Keep your config file safe! Anyone with the file can post to your Mastodon account.")

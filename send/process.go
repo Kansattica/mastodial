@@ -26,15 +26,19 @@ func processqueue(todo []action) error {
 			endpoint = "/api/v1/statuses"
 		}
 		resp, err := common.MakeAuthenticatedPost(endpoint, body, nil)
+		if resp.StatusCode == 408 {
+			fmt.Printf("Your request timed out, but the action may still have gone through.")
+		}
 		if err != nil {
-			fmt.Printf("Had a problem with: %+v. Continuing. Detailed error: %s", err)
+			fmt.Printf("Got an error back. Continuing. Detailed error: %s", err)
 		}
 		parsed, err := common.ParseBody(resp.Body)
 		if err != nil {
 			fmt.Printf("Couldn't parse response body. Continuing. Detailed error: %s", err)
+		} else {
+			fmt.Printf("Successfully %sed post ID %s (content: %s)", act.Act, parsed["id"], parsed["content"])
 		}
 
-		fmt.Printf("Successfully %sed post ID %s (content: %s)", act.Act, parsed["id"], parsed["content"])
 	}
 
 	return nil

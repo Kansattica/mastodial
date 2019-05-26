@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/kansattica/mastodial/common"
 	"github.com/kansattica/mastodial/recv"
@@ -14,7 +15,9 @@ import (
 func main() {
 	flag.Parse()
 	args := flag.Args()
-	common.CommandName = os.Args[0]
+
+	_, file := filepath.Split(os.Args[0]) //Windows puts the whole path to the file here
+	common.CommandName = file
 	if len(args) == 0 {
 		usage(common.CommandName)
 		return

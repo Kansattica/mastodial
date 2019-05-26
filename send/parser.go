@@ -33,7 +33,7 @@ func parseArgsToActions(args []string) (acts []action, err error) {
 		}
 
 	case Reply:
-		fields = []*string{&thisact.Text, &thisact.PostId, &thisact.CW}
+		fields = []*string{&thisact.PostId, &thisact.Text, &thisact.CW}
 		minargs = 2
 		fallthrough
 	case Post:

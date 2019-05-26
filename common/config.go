@@ -14,13 +14,12 @@ const (
 	ClientId     = "clientid"
 	ClientSecret = "clientsecret"
 	AccessToken  = "accesstoken"
-	RefreshToken = "refreshtoken"
 	Username     = "username"
 	Password     = "password"
 	AuthCode     = "authcode"
 )
 
-var Alloptions = [...]string{InstanceUrl, ClientId, ClientSecret, AccessToken, RefreshToken, Username, Password, AuthCode}
+var Alloptions = [...]string{InstanceUrl, ClientId, ClientSecret, AccessToken, Username, Password, AuthCode}
 
 var options map[string]string
 var ConfigRead bool = false
@@ -82,6 +81,11 @@ func OptionExists(key string) bool {
 	return false
 }
 
+func OptionSet(key string) bool {
+	val, prs := options[key]
+	return OptionExists(key) && prs && val != ""
+}
+
 func saveConfig() error {
 	bytes, err := json.MarshalIndent(options, "", "\t")
 
@@ -105,6 +109,7 @@ func saveConfig() error {
 	}
 
 	return nil
+
 }
 
 func readConfig() {
@@ -113,6 +118,7 @@ func readConfig() {
 	}
 
 	file, err := os.OpenFile(ConfigLocation, os.O_RDWR|os.O_CREATE, 0644)
+	defer file.Close()
 
 	if err != nil {
 		fmt.Println("Could not create or open config file. OpenFile reported " + err.Error())

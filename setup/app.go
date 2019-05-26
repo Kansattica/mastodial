@@ -14,7 +14,7 @@ func app(args []string) {
 		return
 	}
 
-	if common.OptionExists(common.ClientId) && common.OptionExists(common.ClientSecret) {
+	if common.OptionSet(common.ClientId) && common.OptionSet(common.ClientSecret) {
 		fmt.Println("You have already registered an app with", url, ". If this is for a new instance, make a new config file with the -c flag or delete", common.ConfigLocation)
 		fmt.Printf("You probably want to do this next:\n %s setup creds\n", common.CommandName)
 		return

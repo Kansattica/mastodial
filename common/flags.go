@@ -29,9 +29,9 @@ func init() {
 	flag.BoolVar(&QueueRequests, "queue", false, queueusage)
 	flag.BoolVar(&QueueRequests, "q", false, queueusage+sh)
 
-	flag.StringVar(&QueueLocation, "queuefile", "mdqueue.json", queueusage)
-	flag.StringVar(&QueueLocation, "qf", "mdqueue.json", queueusage+sh)
+	flag.StringVar(&QueueLocation, "queuefile", "mdqueue.json", qlocationusage)
+	flag.StringVar(&QueueLocation, "qf", "mdqueue.json", qlocationusage+sh)
 
-	flag.BoolVar(&ReadStdin, "stdin", false, queueusage)
+	flag.BoolVar(&ReadStdin, "stdin", false, stdinusage)
 
 }

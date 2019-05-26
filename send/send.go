@@ -62,8 +62,8 @@ var actiondescriptions = [...]ad{
 	{"boost", "[pid]*", "boost the post with post id [pid]. You can list multiple post IDs, separated with spaces."},
 	{"post", "[text]", "create a new post with the text in [text]."},
 	{"post", "[text] % [cw]", "create a new post with the text in [text] and the content warning [cw]. "},
-	{"reply", "[text] % [to]", "reply to post id [to] with the text in [text]."},
-	{"reply", "[text] % [to] % [cw]", "reply to post id [to] with the text in [text] and the content warning [cw]."},
+	{"reply", "[to] % [text]", "reply to post id [to] with the text in [text]."},
+	{"reply", "[to] % [text] % [cw]", "reply to post id [to] with the text in [text] and the content warning [cw]."},
 }
 
 func usage() {
@@ -79,7 +79,7 @@ func usage() {
 		fmt.Println(val.action, "\t", val.args, "\t", val.description)
 	}
 	fmt.Println("\nThe percent sign character % is used to separate arguments.\nIf you want to post a percent sign, put another percent sign before it, like this: %%")
-	fmt.Println("If the shell keeps interpreting your exclamation points and whatnot, try using the -stdin flag. Then, type your post and hit ctrl-D on its own line or pipe it in from a file.")
+	fmt.Println("If the shell keeps interpreting your exclamation points and whatnot, try using the -stdin flag. Then, type your post and hit ctrl-D (ctrl-Z on Windows) on its own line or pipe it in from a file.")
 }
 
 //copied and adapted from https://golang.org/src/bufio/scan.go?s=13093:13171#L380
