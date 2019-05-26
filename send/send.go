@@ -60,6 +60,7 @@ var actiondescriptions = [...]ad{
 	{"nop", "(none)", "do nothing"},
 	{"fav", "[pid]*", "favorite the post with post id [pid]. You can list multiple post IDs, separated with spaces."},
 	{"boost", "[pid]*", "boost the post with post id [pid]. You can list multiple post IDs, separated with spaces."},
+	{"delete", "[pid]*", "delete the post with post id [pid]. You can list multiple post IDs, separated with spaces."},
 	{"post", "[text]", "create a new post with the text in [text]."},
 	{"post", "[text] % [cw]", "create a new post with the text in [text] and the content warning [cw]. "},
 	{"reply", "[to] % [text]", "reply to post id [to] with the text in [text]."},

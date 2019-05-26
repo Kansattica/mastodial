@@ -4,20 +4,30 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"html"
 	"io"
 	"net/http"
 	"net/url"
 	"os"
+
+	"github.com/grokify/html-strip-tags-go"
 )
 
 func MakeAuthenticatedPost(endpoint string, body, queryParams map[string]string) (resp *http.Response, err error) {
 	tok := GetConfig(AccessToken)
-	return MakePostRequest(endpoint, body, queryParams, map[string]string{
+	return MakeRequest(endpoint, "POST", body, queryParams, map[string]string{
 		"Authorization": "Bearer " + tok,
 	})
 }
 
-func MakePostRequest(endpoint string, body, queryParams, header map[string]string) (resp *http.Response, err error) {
+func MakeAuthenticatedRequest(endpoint, method string, body, queryParams map[string]string) (resp *http.Response, err error) {
+	tok := GetConfig(AccessToken)
+	return MakeRequest(endpoint, method, body, queryParams, map[string]string{
+		"Authorization": "Bearer " + tok,
+	})
+}
+
+func MakeRequest(endpoint, method string, body, queryParams, header map[string]string) (resp *http.Response, err error) {
 	strUrl := GetConfig(InstanceUrl)
 
 	if strUrl == "" {
@@ -56,7 +66,7 @@ func MakePostRequest(endpoint string, body, queryParams, header map[string]strin
 	//return http.Post(iurl.String(), "application/json", bytes.NewReader(bodyjson))
 
 	client := &http.Client{}
-	req, err := http.NewRequest("POST", iurl.String(), bytes.NewReader(bodyjson))
+	req, err := http.NewRequest(method, iurl.String(), bytes.NewReader(bodyjson))
 
 	if err != nil {
 		return
@@ -91,6 +101,12 @@ func ParseBody(body io.Reader) (resp map[string]interface{}, err error) {
 
 	if b, shouldClose := body.(io.Closer); shouldClose {
 		b.Close()
+	}
+
+	if val, prs := resp["content"]; prs {
+		resp["content"] = html.UnescapeString(strip.StripTags(val.(string)))
+	} else {
+		resp["content"] = "(no body)"
 	}
 
 	return

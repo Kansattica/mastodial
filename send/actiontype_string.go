@@ -4,9 +4,9 @@ package send
 
 import "strconv"
 
-const _ActionType_name = "NopPostFavBoostReply"
+const _ActionType_name = "NopPostFavBoostReplyDel"
 
-var _ActionType_index = [...]uint8{0, 3, 7, 10, 15, 20}
+var _ActionType_index = [...]uint8{0, 3, 7, 10, 15, 20, 23}
 
 func (i ActionType) String() string {
 	if i < 0 || i >= ActionType(len(_ActionType_index)-1) {

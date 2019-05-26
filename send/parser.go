@@ -25,7 +25,7 @@ func parseArgsToActions(args []string) (acts []action, err error) {
 	minargs := 1
 	fields := []*string{&thisact.Text, &thisact.CW}
 	switch todo {
-	case Fav, Boost:
+	case Fav, Boost, Del:
 		for _, str := range args {
 			for _, val := range strings.Fields(str) {
 				acts = append(acts, action{Act: todo, PostId: val})
@@ -81,14 +81,16 @@ const (
 	Fav
 	Boost
 	Reply
+	Del
 )
 
 var actstr = map[string]ActionType{
-	"nop":   Nop,
-	"post":  Post,
-	"fav":   Fav,
-	"boost": Boost,
-	"reply": Reply,
+	"nop":    Nop,
+	"post":   Post,
+	"fav":    Fav,
+	"boost":  Boost,
+	"reply":  Reply,
+	"delete": Del,
 }
 
 func ParseActionType(str string) (ActionType, error) {

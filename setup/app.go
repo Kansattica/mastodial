@@ -20,7 +20,7 @@ func app(args []string) {
 		return
 	}
 
-	resp, err := common.MakePostRequest("/api/v1/apps", map[string]string{
+	resp, err := common.MakeRequest("/api/v1/apps", "POST", map[string]string{
 		"client_name":   "Mastodial",
 		"redirect_uris": "urn:ietf:wg:oauth:2.0:oob",
 		"scopes":        "read write",
