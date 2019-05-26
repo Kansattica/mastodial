@@ -2,7 +2,9 @@
 gob = go build
 files = main.go $(wildcard ./**/*.go)
 toplevel = main.go common Makefile README.md recv send setup
+
 dist = dist
+srvdist = /var/www/blog/down
 uncom = $(dist)/uncompressed
 com = $(dist)/compressed
 source = $(dist)/source
@@ -26,7 +28,18 @@ clean:
 	go clean -i
 	rm -r $(dist)
 
-ship: $(foreach X, $(exes), $(com)/$(compressed_prefix)$X) archives
+
+uncompressedexes = $(foreach X, $(exes), $(uncom)/$X)
+compressedexes = $(foreach X, $(exes), $(com)/$(compressed_prefix)$X)
+
+allexes = $(uncompressedexes) $(compressedexes)
+
+release: $(foreach X, $(allexes) $(tarball) $(tarball).gz $(srczip), $(srvdist)/$X) 
+
+$(srvdist)/$(dist)/%: $(dist)/%
+	mkdir -p $(dir $@) && cp $< $@
+
+ship: $(compressedexes) archives
 
 archives: $(tarball) $(tarball).gz $(srczip)
 
