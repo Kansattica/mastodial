@@ -1,4 +1,4 @@
-.PHONY: all clean linux windows ship format archives
+.PHONY: all clean linux windows format archives release ship
 gob = go build
 files = main.go $(wildcard ./**/*.go)
 toplevel = main.go common Makefile README.md recv send setup
@@ -11,6 +11,8 @@ source = $(dist)/source
 tarball = $(source)/mastodial.tar
 srczip = $(source)/mastodial.zip
 compressed_prefix = cmp_
+
+gzip = ./zopfli #gzip
 
 exes = mastodial-linux32 mastodial-linux64 mastodial-windows32.exe mastodial-windows64.exe
 
@@ -34,7 +36,7 @@ compressedexes = $(foreach X, $(exes), $(com)/$(compressed_prefix)$X)
 
 allexes = $(uncompressedexes) $(compressedexes)
 
-release: $(foreach X, $(allexes) $(tarball) $(tarball).gz $(srczip), $(srvdist)/$X) 
+release: $(foreach X, $(allexes) $(tarball) $(srczip), $(srvdist)/$X $(srvdist)/$X.gz) 
 
 $(srvdist)/$(dist)/%: $(dist)/%
 	mkdir -p $(dir $@) && cp $< $@
@@ -51,14 +53,28 @@ $(srczip): $(files) $(toplevel)
 	mkdir -p $(source)
 	zip -r $(srczip) $(toplevel)
 
-$(com)/$(compressed_prefix)%: $(uncom)/%
+$(com)/$(compressed_prefix)%: $(uncom)/% upx
 	mkdir -p $(com)
 	rm -f $@ #upx won't overwrite an existing file
 	./upx --brute $< -o $@
 	touch $@ #upx truncates the lower bits of the timestamp, fix that
 
-%.gz: %
-	gzip -k -f $<
+upx:
+	wget https://github.com/upx/upx/releases/download/v3.95/upx-3.95-amd64_linux.tar.xz -O - | xzcat | tar xv
+	mv upx-3.95-amd64_linux/upx .
+	rm -r upx-3.95-amd64_linux
+
+%.gz: % $(gzip)
+	$(gzip) -k -f $<
+
+gzip:
+
+zopfli:
+	git clone https://github.com/google/zopfli.git
+	cd zopfli && make
+	mv zopfli/zopfli ./z
+	rm -rf zopfli
+	mv z zopfli
 
 arch := 32 64
 prefix := $(uncom)/mastodial-
