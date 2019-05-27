@@ -36,6 +36,12 @@ func Send(args []string) {
 	}
 
 	acts, err := parseArgsToActions(args)
+	sendQueue := acts[0].Act == Queue
+
+	if sendQueue && common.QueueRequests {
+		fmt.Println("Hey, you gotta pick one. Do you want to queue stuff or send stuff?")
+		return
+	}
 
 	if err != nil {
 		fmt.Println(err)
@@ -43,7 +49,7 @@ func Send(args []string) {
 	}
 	fmt.Printf("%+v\n", acts)
 
-	if acts[0].Act == Queue {
+	if sendQueue {
 		acts, err = readQueue()
 
 		if err != nil {
@@ -60,6 +66,7 @@ func Send(args []string) {
 		}
 		err = saveQueue(append(qacts, acts...))
 		fmt.Println("Post queued to", common.QueueLocation)
+		return
 	} else {
 		err = processqueue(acts)
 	}
@@ -69,8 +76,9 @@ func Send(args []string) {
 		return
 	}
 
-	if acts[0].Act == Queue {
-		fmt.Println("Queue sent successfully. Renaming to ", common.QueueLocation+".sent")
+	fmt.Printf("%+v", acts)
+	if sendQueue {
+		fmt.Println("Queue sent successfully. Renaming to", common.QueueLocation+".sent")
 		err = os.Rename(common.QueueLocation, common.QueueLocation+".sent")
 
 		if err != nil {
