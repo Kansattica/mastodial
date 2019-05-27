@@ -18,15 +18,13 @@ func parseArgsToActions(args []string) (acts []action, err error) {
 		return
 	}
 
-	args = args[1:]
-
 	var thisact action
 	thisact.Act = todo
-	minargs := 1
+	minargs := 0
 	fields := []*string{&thisact.Text, &thisact.CW}
 	switch todo {
 	case Fav, Boost, Del:
-		for _, str := range args {
+		for _, str := range args[1:] {
 			for _, val := range strings.Fields(str) {
 				acts = append(acts, action{Act: todo, PostId: val})
 			}
@@ -37,15 +35,18 @@ func parseArgsToActions(args []string) (acts []action, err error) {
 		minargs = 2
 		fallthrough
 	case Post:
-		parsePercentArgs(args, fields)
+		parsePercentArgs(args[1:], fields)
 		if thisact.Text == "" {
 			err = fmt.Errorf("You have to give some text for %s", todo)
 			return
 		}
+		minargs = 1
+		fallthrough
+	case Queue:
 		acts = append(acts, thisact)
 	}
 
-	if len(args) == 0 {
+	if len(args) < minargs+1 {
 		err = fmt.Errorf("You need %d or more arguments.", minargs)
 		return
 	}
@@ -82,6 +83,7 @@ const (
 	Boost
 	Reply
 	Del
+	Queue
 )
 
 var actstr = map[string]ActionType{
@@ -91,6 +93,7 @@ var actstr = map[string]ActionType{
 	"boost":  Boost,
 	"reply":  Reply,
 	"delete": Del,
+	"queue":  Queue,
 }
 
 func ParseActionType(str string) (ActionType, error) {

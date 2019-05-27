@@ -43,11 +43,40 @@ func Send(args []string) {
 	}
 	fmt.Printf("%+v\n", acts)
 
-	err = processqueue(acts)
+	if acts[0].Act == Queue {
+		acts, err = readQueue()
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+	}
+
+	if common.QueueRequests {
+		qacts, err := readQueue()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		err = saveQueue(append(qacts, acts...))
+		fmt.Println("Post queued to", common.QueueLocation)
+	} else {
+		err = processqueue(acts)
+	}
 
 	if err != nil {
 		fmt.Println(err)
 		return
+	}
+
+	if acts[0].Act == Queue {
+		fmt.Println("Queue sent successfully. Renaming to ", common.QueueLocation+".sent")
+		err = os.Rename(common.QueueLocation, common.QueueLocation+".sent")
+
+		if err != nil {
+			fmt.Println("Rename failed. os.Rename said: ", err.Error())
+		}
+
 	}
 
 }
@@ -70,7 +99,7 @@ var actiondescriptions = [...]ad{
 func usage() {
 	fmt.Println("Mastodial - Mastodon (and compatible) client for low-bandwidth connections.", "Usage:")
 	fmt.Printf("\t%s send - this help text\n", common.CommandName)
-	fmt.Printf("\t%s -q send - send everything in the queue\n", common.CommandName)
+	fmt.Printf("\t%s send queue - send everything in the queue\n", common.CommandName)
 	fmt.Printf("\t%s send [action] [args] - performs [action] immediately\n", common.CommandName)
 	fmt.Printf("\t%s -q send [action] [args] - saves action to a queue file to be sent later\n", common.CommandName)
 	fmt.Printf("Notice that flags have to be immediately after %s! They won't work anywhere else.\n", common.CommandName)
