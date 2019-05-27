@@ -47,7 +47,7 @@ archives: $(tarball) $(tarball).gz $(srczip)
 
 $(tarball): $(files) $(toplevel)
 	mkdir -p $(source)
-	tar cvf $(tarball) $(toplevel)
+	tar --exclude='.[^/]*'  -cvf $(tarball) $(toplevel)
 
 $(srczip): $(files) $(toplevel)
 	mkdir -p $(source)
