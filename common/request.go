@@ -13,13 +13,6 @@ import (
 	"github.com/grokify/html-strip-tags-go"
 )
 
-func MakeAuthenticatedPost(endpoint string, body, queryParams map[string]string) (resp *http.Response, err error) {
-	tok := GetConfig(AccessToken)
-	return MakeRequest(endpoint, "POST", body, queryParams, map[string]string{
-		"Authorization": "Bearer " + tok,
-	})
-}
-
 func MakeAuthenticatedRequest(endpoint, method string, body, queryParams map[string]string) (resp *http.Response, err error) {
 	tok := GetConfig(AccessToken)
 	return MakeRequest(endpoint, method, body, queryParams, map[string]string{
