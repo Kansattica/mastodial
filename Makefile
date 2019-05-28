@@ -1,7 +1,7 @@
 .PHONY: all clean linux windows format archives release ship
 gob = go build
-files = main.go $(wildcard ./**/*.go)
-toplevel = main.go common Makefile README.md recv send setup mod.go mod.sum
+files = main.go go.mod go.sum $(wildcard ./**/*.go)
+toplevel = main.go common Makefile README.md recv send setup go.mod go.sum
 
 dist = dist
 srvdist = /var/www/blog/down
