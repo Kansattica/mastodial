@@ -40,6 +40,8 @@ func Send(args []string) {
 
 	if sendQueue && common.QueueRequests {
 		fmt.Println("Hey, you gotta pick one. Do you want to queue stuff or send stuff?")
+		fmt.Println("Use the -q option to say that an action should be queued for later.")
+		fmt.Println("Use the queue subcommand to execute everything in the queue.")
 		return
 	}
 
