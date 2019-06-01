@@ -1,22 +1,24 @@
 .PHONY: all clean linux windows format archives release ship
+projname = mastodial
+
 gob = go build
 files = main.go go.mod go.sum $(wildcard ./**/*.go)
 toplevel = main.go common Makefile README.md recv send setup go.mod go.sum
 
-dist = dist
+dist = dist/mastodial
 srvdist = /var/www/blog/down
 uncom = $(dist)/uncompressed
 com = $(dist)/compressed
 source = $(dist)/source
-tarball = $(source)/mastodial.tar
-srczip = $(source)/mastodial.zip
+tarball = $(source)/$(projname).tar
+srczip = $(source)/$(projname).zip
 compressed_prefix = cmp_
 
 gzip = ./zopfli #gzip
 
-exes = mastodial-linux32 mastodial-linux64 mastodial-windows32.exe mastodial-windows64.exe
+exes = $(projname)-linux32 $(projname)-linux64 $(projname)-windows32.exe $(projname)-windows64.exe
 
-native: format mastodial
+native: format $(projname)
 
 mastodial: $(files)
 	$(gob) 
@@ -77,7 +79,7 @@ zopfli:
 	mv z zopfli
 
 arch := 32 64
-prefix := $(uncom)/mastodial-
+prefix := $(uncom)/$(projname)-
 
 distflags := -ldflags="-s -w"
 linux: $(foreach X,$(arch),$(prefix)linux$X)

