@@ -44,7 +44,7 @@ func usage(cmd string) {
 	fmt.Println("Mastodial - Mastodon (and compatible) client for low-bandwidth connections.", "Usage:")
 	fmt.Printf("\t%s recv  - recieve posts\n", cmd)
 	fmt.Printf("\t%s send  - send posts\n", cmd)
-	fmt.Printf("\t%s setup - set up connection, set options\n", cmd)
+	fmt.Printf("\t%s setup - set up connection, set options. Start here.\n", cmd)
 	fmt.Printf("Call %s -h for command line flags.\n", cmd)
 }
 
