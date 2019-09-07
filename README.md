@@ -1,5 +1,8 @@
 # Mastodial
 
+## Notice
+You're welcome to keep using Mastodial if you like, but know that I'll be focusing most of my effort on its successor,<https://github.com/Kansattica/msync> from now on.
+
 ## Usage
 
 Running Mastodial without any arguments will display help information. Try `./mastodial`. If you downloaded one of the release binaries, feel free to rename it to something easier to type, like `mastodial` or `md`.
