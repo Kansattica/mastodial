@@ -15,6 +15,7 @@ srczip = $(source)/$(projname).zip
 compressed_prefix = cmp_
 
 gzip = ./zopfli #gzip
+xz = xz
 
 exes = $(projname)-linux32 $(projname)-linux64 $(projname)-windows32.exe $(projname)-windows64.exe
 
@@ -38,7 +39,7 @@ compressedexes = $(foreach X, $(exes), $(com)/$(compressed_prefix)$X)
 
 allexes = $(uncompressedexes) $(compressedexes)
 
-release: $(foreach X, $(allexes) $(tarball) $(srczip), $(srvdist)/$X $(srvdist)/$X.gz) 
+release: $(foreach X, $(allexes) $(tarball) $(srczip), $(srvdist)/$X $(srvdist)/$X.gz $(srvdist)/$X.xz) 
 
 $(srvdist)/$(dist)/%: $(dist)/%
 	mkdir -p $(dir $@) && cp $< $@
@@ -68,6 +69,9 @@ upx:
 
 %.gz: % $(gzip)
 	$(gzip) -k -f $<
+
+%.xz: %
+	$(xz) -k -f $<
 
 gzip:
 
